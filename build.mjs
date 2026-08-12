@@ -34,6 +34,141 @@ const LOCALE_META = {
   en: { htmlLang: "en", updated: "Last updated", home: "Suflor", other: "Türkçe", back: "All documents" },
 };
 
+/// Destek sayfası. İçeriği veritabanından gelmiyor: bu bir politika değil, App Store ve Play'in zorunlu
+/// tuttuğu iletişim sayfası — panelden düzenlenecek bir metni yok. Yine de HTML'i elle `docs/` içine
+/// koymak yerine burada üretiliyor, çünkü main() her çalıştığında o klasörü siliyor; elle konan dosya ilk
+/// yeniden üretimde kaybolur ve mağazaya verilen Support URL sessizce 404'e döner.
+///
+/// Metinlerde HTML'e izin var (bağlantılar için) — bunlar burada yazılmış sabitler, dışarıdan gelen veri
+/// değil. Yalnızca soru başlıkları escape ediliyor.
+const SUPPORT = {
+  tr: {
+    path: "destek",
+    label: "Destek",
+    title: "Destek",
+    description: "Suflor destek sayfası — iletişim ve sık sorulan sorular.",
+    intro: [
+      "Suflor, oyuncuların senaryolarını yükleyip prova yaptığı ve audition kaydı aldığı bir uygulamadır.",
+      `Sorunuz, hata bildiriminiz veya talebiniz için <a href="mailto:${CONTACT}">${CONTACT}</a> adresine
+       yazın. Mesajlarınızı iki iş günü içinde yanıtlıyoruz.`,
+      "Daha hızlı çözebilmemiz için yazarken şunları ekleyin: hesabınızda kullandığınız e-posta adresi, " +
+        "cihaz modeliniz ve iOS/Android sürümünüz, sorunun ne yaparken oluştuğu.",
+    ],
+    faq: [
+      [
+        "Krediler nasıl çalışır?",
+        [
+          "Prova yapmak hiçbir zaman kredi harcamaz. Kredi; senaryo yükleyip analiz ettirirken, replikler " +
+            "seslendirilirken, bir repliği düzenleyip sesini yeniden ürettirirken ve tamamladığınız kaydı " +
+            "galeriye kaydederken harcanır.",
+          "Hangi işlemin kaç kredi olduğunu uygulama içindeki Kredi Satın Al ekranında güncel hâliyle " +
+            "görebilirsiniz.",
+        ],
+      ],
+      [
+        "Satın aldığım kredi hesabıma geçmedi",
+        [
+          "Satın alma Apple veya Google üzerinden tamamlanır, kredi genellikle birkaç saniye içinde " +
+            "yüklenir. Yüklenmediyse önce uygulamayı tamamen kapatıp yeniden açın.",
+          "Sorun sürerse satın alma tarihini ve mağazadan gelen makbuz numarasını bize yazın; işlemi " +
+            "kontrol edip krediyi elle tanımlayalım.",
+        ],
+      ],
+      [
+        "İade alabilir miyim?",
+        [
+          "Uygulama içi satın almaların iadesini mağaza yapıyor, biz mağaza adına iade işleme " +
+            'alamıyoruz. App Store için <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>, ' +
+            "Google Play için Play Store'daki sipariş geçmişiniz üzerinden talep oluşturabilirsiniz.",
+        ],
+      ],
+      [
+        "Hesabımı nasıl silerim?",
+        [
+          "Uygulama içinden: Profil → Hesabı Sil. Onayladığınızda tüm senaryolarınız, kayıtlarınız ve " +
+            "kalan krediniz kalıcı olarak silinir; bu işlem geri alınamaz.",
+        ],
+      ],
+      [
+        "Yüklediğim senaryoya ne oluyor?",
+        [
+          "Senaryonuz, karakter ve replik akışına ayrılabilmesi için işlenir. Hangi verinin ne amaçla " +
+            'işlendiği ve ne kadar saklandığı <a href="{PRIVACY}">Gizlilik Politikası</a>\'nda yazıyor.',
+        ],
+      ],
+      [
+        "Çektiğim video nerede?",
+        [
+          "Kaydı tamamlayıp galeriye kaydettiğinizde video doğrudan telefonunuzun galerisine düşer.",
+        ],
+      ],
+    ],
+  },
+  en: {
+    path: "en/support",
+    label: "Support",
+    title: "Support",
+    description: "Suflor support — contact and frequently asked questions.",
+    intro: [
+      "Suflor is an app where actors upload their scripts, rehearse, and record audition takes.",
+      `For questions, bug reports or requests, write to <a href="mailto:${CONTACT}">${CONTACT}</a>. We
+       reply within two business days.`,
+      "To help us resolve it faster, include the email address on your account, your device model and " +
+        "iOS/Android version, and what you were doing when the problem happened.",
+    ],
+    faq: [
+      [
+        "How do credits work?",
+        [
+          "Rehearsing never costs credits. Credits are spent when a script is uploaded and analysed, when " +
+            "lines are voiced, when you edit a line and its audio is regenerated, and when you save a " +
+            "finished take to your photo library.",
+          "The current cost of each action is shown on the Buy Credits screen inside the app.",
+        ],
+      ],
+      [
+        "I bought credits but they didn't arrive",
+        [
+          "Purchases are completed through Apple or Google and credits usually land within seconds. If " +
+            "they don't, close the app completely and reopen it.",
+          "If the problem persists, send us the purchase date and the receipt number from the store and " +
+            "we'll check the transaction and add the credits manually.",
+        ],
+      ],
+      [
+        "Can I get a refund?",
+        [
+          "Refunds for in-app purchases are handled by the store, not by us. For the App Store, use " +
+            '<a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>; for Google Play, ' +
+            "request it from your order history in the Play Store.",
+        ],
+      ],
+      [
+        "How do I delete my account?",
+        [
+          "In the app: Profile → Delete Account. Once confirmed, all of your scripts, recordings and " +
+            "remaining credits are permanently deleted; this cannot be undone.",
+        ],
+      ],
+      [
+        "What happens to the script I upload?",
+        [
+          "Your script is processed so it can be split into characters and lines. What is processed, why, " +
+            'and how long it is kept is described in the <a href="{PRIVACY}">Privacy Policy</a>.',
+        ],
+      ],
+      [
+        "Where is the video I recorded?",
+        ["Once you finish a take and save it, the video goes straight to your phone's photo library."],
+      ],
+    ],
+  },
+};
+
+/// Destek sayfasından gizlilik politikasına giden yol, dile göre değişiyor (tr → gizlilik, en →
+/// en/privacy) ve sayfanın derinliğine göre relative çözülmesi gerekiyor.
+const PRIVACY_PATH = { tr: "gizlilik", en: "en/privacy" };
+
 function env(name) {
   const value = process.env[name];
   if (!value) {
@@ -155,16 +290,57 @@ function indexPage(published) {
     )
     .join("\n");
 
+  const supportLinks = ["tr", "en"]
+    .map(
+      (locale) =>
+        `        <li><a href="${SUPPORT[locale].path}/">${escapeHtml(SUPPORT[locale].label)}</a> <span>${
+          locale === "tr" ? "Türkçe" : "English"
+        }</span></li>`,
+    )
+    .join("\n");
+
   return layout({
     path: "",
     locale: "tr",
-    title: "Hukuki metinler",
-    description: `${SITE_NAME} gizlilik politikası ve kullanım şartları.`,
-    body: `      <h1>Hukuki metinler</h1>
+    title: "Belgeler ve destek",
+    description: `${SITE_NAME} gizlilik politikası, kullanım şartları ve destek sayfası.`,
+    body: `      <h1>Belgeler ve destek</h1>
       <p>${escapeHtml(SITE_NAME)} uygulamasının yürürlükteki belgeleri.</p>
       <ul class="docs">
 ${links}
+      </ul>
+      <h2>Destek</h2>
+      <ul class="docs">
+${supportLinks}
       </ul>`,
+  });
+}
+
+function supportPage(locale) {
+  const page = SUPPORT[locale];
+  const meta = LOCALE_META[locale];
+  const other = locale === "tr" ? "en" : "tr";
+  const up = upTo(page.path);
+
+  const resolve = (html) => html.replaceAll("{PRIVACY}", `${up}${PRIVACY_PATH[locale]}/`);
+  const paragraphs = (list) => list.map((text) => `      <p>${resolve(text)}</p>`).join("\n");
+
+  const faq = page.faq
+    .map(([question, answers]) => `      <h2>${escapeHtml(question)}</h2>\n${paragraphs(answers)}`)
+    .join("\n");
+
+  const body = `      <h1>${escapeHtml(page.title)}</h1>
+${paragraphs(page.intro)}
+      <p class="switch"><a href="${up}${SUPPORT[other].path}/">${meta.other}</a></p>
+${faq}
+      <p class="switch"><a href="${up}">${meta.back}</a></p>`;
+
+  return layout({
+    path: page.path,
+    locale,
+    title: page.title,
+    description: page.description,
+    body,
   });
 }
 
@@ -308,6 +484,15 @@ async function main() {
     await mkdir(dirname(target), { recursive: true });
     await writeFile(target, documentPage(entry.doc, entry.row, sibling?.doc.path ?? null), "utf8");
     console.log(`yazıldı: docs/${entry.doc.path}/index.html`);
+  }
+
+  // Destek sayfaları veritabanına bakmıyor, bu yüzden bir belgenin eksik olması onları etkilemez —
+  // mağazaya verilen Support URL her üretimde yerinde durmalı.
+  for (const locale of ["tr", "en"]) {
+    const target = join(OUT, SUPPORT[locale].path, "index.html");
+    await mkdir(dirname(target), { recursive: true });
+    await writeFile(target, supportPage(locale), "utf8");
+    console.log(`yazıldı: docs/${SUPPORT[locale].path}/index.html`);
   }
 
   await writeFile(join(OUT, "index.html"), indexPage(published), "utf8");

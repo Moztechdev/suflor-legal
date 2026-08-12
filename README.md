@@ -22,6 +22,15 @@ uygulama içinde başka, sitede başka bir politika görünür. Metin panelden d
 `docs/` klasörü üretilmiş olmasına rağmen repoya commit ediliyor — GitHub Pages'in yayınladığı şey o
 klasör, ve neyin yayında olduğunun git geçmişinde görünmesi hukuki bir metin için istenen şey.
 
+## Destek sayfası
+
+`/destek/` ve `/en/support/` de burada yayınlanıyor; App Store Connect'in **Support URL** alanı bu adresi
+gösteriyor. Ama içeriği veritabanından gelmiyor: destek metni bir politika değil, panelden düzenlenecek bir
+şeyi yok. Metin doğrudan `build.mjs` içindeki `SUPPORT` sabitinde duruyor, orada düzenlenir.
+
+Sayfayı **`docs/` içine elle HTML koyarak ekleme.** `build.mjs` her çalıştığında o klasörü baştan siliyor;
+elle konan dosya ilk yeniden üretimde kaybolur ve mağazaya verdiğimiz Support URL sessizce 404'e döner.
+
 ## Kavramlar (bu iş ilk kez yapılıyorsa)
 
 **GitHub Pages**, GitHub'ın repodaki statik dosyaları bir web adresinden yayınlayan ücretsiz servisi.
