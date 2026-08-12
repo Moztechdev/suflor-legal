@@ -1,0 +1,41 @@
+# Siteyi veritabanındaki güncel metinden yeniden üretir ve değiştiyse commit eder.
+#
+# Elle tetiklenir (Actions sekmesi → Yayınla → Run workflow). Bilerek zamanlanmış değil: hukuki bir metnin
+# ne zaman yürürlüğe girdiği bir karardır, bir cron'un yan etkisi değil. Panelde metni düzenledikten sonra
+# yayına almaya hazır olduğunda bu düğmeye basarsın.
+name: Yayınla
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Siteyi üret
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: npm run build
+
+      - name: Değiştiyse commit et
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          # Metin değişmediyse commit yok: boş bir commit, "bir şey yayınlandı" izlenimi verir.
+          if git diff --staged --quiet; then
+            echo "Değişiklik yok — veritabanındaki metin sitedekiyle aynı."
+            exit 0
+          fi
+          git commit -m "chore: rebuild legal pages from database"
+          git push

@@ -1,0 +1,9 @@
+{
+  "name": "suflor-legal",
+  "private": true,
+  "type": "module",
+  "description": "Suflor'un hukuki metinlerini veritabanından statik HTML'e çeviren üretici.",
+  "scripts": {
+    "build": "node --env-file-if-exists=.env build.mjs"
+  }
+}
