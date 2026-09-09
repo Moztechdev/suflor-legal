@@ -22,11 +22,17 @@ const CONTACT = "destek@suflor.app";
 
 /// Yayınlanan belgeler. `script_consent` bilerek yok: o, uygulama içinde senaryo yüklerken onaylanan bir
 /// metin, herkese açık bir politika değil.
+///
+/// `subprocessors` ise tam tersi sebeple BURADA: senaryonun hangi sağlayıcıya gittiğini bir menajerin ya da
+/// yapımcının uygulamayı kurmadan doğrulayabilmesi gerekiyor. Uygulama içinde kalsaydı, güvenmesi istenen
+/// kişi onu hiç göremezdi.
 const DOCS = [
   { slug: "privacy", locale: "tr", path: "gizlilik", label: "Gizlilik Politikası" },
   { slug: "terms", locale: "tr", path: "kullanim-sartlari", label: "Kullanım Şartları" },
+  { slug: "subprocessors", locale: "tr", path: "senaryon-nereye-gidiyor", label: "Senaryon nereye gidiyor" },
   { slug: "privacy", locale: "en", path: "en/privacy", label: "Privacy Policy" },
   { slug: "terms", locale: "en", path: "en/terms", label: "Terms of Use" },
+  { slug: "subprocessors", locale: "en", path: "en/where-your-script-goes", label: "Where your script goes" },
 ];
 
 const LOCALE_META = {
@@ -450,7 +456,7 @@ async function main() {
   const key = env("SUPABASE_ANON_KEY");
 
   const response = await fetch(
-    `${url}/rest/v1/legal_document_texts?select=slug,locale,title,sections,updated_at&slug=in.(privacy,terms)`,
+    `${url}/rest/v1/legal_document_texts?select=slug,locale,title,sections,updated_at&slug=in.(privacy,terms,subprocessors)`,
     { headers: { apikey: key, Authorization: `Bearer ${key}` } },
   );
 
