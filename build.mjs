@@ -18,7 +18,7 @@ const OUT = join(ROOT, "docs");
 
 const SITE_NAME = "Suflor";
 const COMPANY = "Moz Teknoloji ve Tasarım Limited Şirketi";
-const CONTACT = "destek@suflor.app";
+const CONTACT = "suflorapp@gmail.com";
 
 /// Yayınlanan belgeler. `script_consent` bilerek yok: o, uygulama içinde senaryo yüklerken onaylanan bir
 /// metin, herkese açık bir politika değil.
