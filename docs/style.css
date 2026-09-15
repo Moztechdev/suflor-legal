@@ -64,6 +64,86 @@ p { margin: 0 0 16px; }
 
 a { color: var(--link); }
 
+.table-scroll {
+  margin: 1.5rem 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  table-layout: fixed;
+}
+
+th,
+td {
+  border: 1px solid var(--rule);
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: break-word;
+}
+
+thead th {
+  font-weight: 600;
+}
+
+tbody th {
+  font-weight: 600;
+}
+
+td .dash {
+  color: var(--muted);
+}
+
+/* Dar ekranda beş sütun sığmıyor; yatay kaydırma yerine her sağlayıcı bir kart oluyor. Başlık satırı
+   kayboluyor, sütun adını hücrenin kendi data-label'ı taşıyor. */
+@media (max-width: 40rem) {
+  table,
+  tbody,
+  tbody tr,
+  tbody th,
+  tbody td {
+    display: block;
+    width: auto;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    border: 1px solid var(--rule);
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  tbody th,
+  tbody td {
+    border: 0;
+    padding: 0.2rem 0;
+  }
+
+  tbody th {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  tbody td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+}
+
+.note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .updated,
 .switch {
   color: var(--muted);

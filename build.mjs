@@ -20,19 +20,16 @@ const SITE_NAME = "Suflor";
 const COMPANY = "Moz Teknoloji ve Tasarım Limited Şirketi";
 const CONTACT = "suflorapp@gmail.com";
 
-/// Yayınlanan belgeler. `script_consent` bilerek yok: o, uygulama içinde senaryo yüklerken onaylanan bir
-/// metin, herkese açık bir politika değil.
+/// Veritabanından gelen belgeler. `script_consent` bilerek yok: o, uygulama içinde senaryo yüklerken
+/// onaylanan bir metin, herkese açık bir politika değil.
 ///
-/// `subprocessors` ise tam tersi sebeple BURADA: senaryonun hangi sağlayıcıya gittiğini bir menajerin ya da
-/// yapımcının uygulamayı kurmadan doğrulayabilmesi gerekiyor. Uygulama içinde kalsaydı, güvenmesi istenen
-/// kişi onu hiç göremezdi.
+/// Sağlayıcı listesi de burada değil — o sayfa panelden düzenlenen bir metin olmadığı için üreticinin
+/// kendi içinde duruyor (aşağıdaki PROVIDERS ve THIRD_PARTY).
 const DOCS = [
   { slug: "privacy", locale: "tr", path: "gizlilik", label: "Gizlilik Politikası" },
   { slug: "terms", locale: "tr", path: "kullanim-sartlari", label: "Kullanım Şartları" },
-  { slug: "subprocessors", locale: "tr", path: "senaryon-nereye-gidiyor", label: "Senaryon nereye gidiyor" },
   { slug: "privacy", locale: "en", path: "en/privacy", label: "Privacy Policy" },
   { slug: "terms", locale: "en", path: "en/terms", label: "Terms of Use" },
-  { slug: "subprocessors", locale: "en", path: "en/where-your-script-goes", label: "Where your script goes" },
 ];
 
 const LOCALE_META = {
@@ -286,12 +283,251 @@ ${rendered}
   });
 }
 
+/// Üçüncü taraf hizmet listesi. Kullanım ve Hizmet Sözleşmesi ile Aydınlatma Metni bu sayfaya atıf yapıyor,
+/// bu yüzden adresi sabit kalmalı: bir sağlayıcı eklendiğinde sayfa güncellenir, sözleşme değişmez.
+///
+/// İçeriği veritabanından gelmiyor. Panelden düzenlenecek bir metin değil — hangi sağlayıcıyı kullandığımız
+/// koda ve altyapıya bağlı bir olgu, ve bir satırın eklenmesi kod değişikliğiyle aynı anda olmalı ki sayfa
+/// ile gerçek birbirinden ayrılmasın.
+const PROVIDERS = [
+  {
+    name: "Google Gemini API",
+    purpose: { tr: "Senaryo analizi, dil tespiti, karakter/replik ayrıştırma", en: "Script analysis, language detection, character and line splitting" },
+    terms: [["Kullanım Şartları", "Terms of Service", "https://ai.google.dev/gemini-api/terms"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://policies.google.com/privacy"]],
+    dpa: [
+      ["Veri İşleme Ek Sözleşmesi", "Data Processing Addendum", "https://business.safety.google/processorterms/"],
+      ["Standart Sözleşme Maddeleri", "Standard Contractual Clauses", "https://business.safety.google/gdprcontrollerterms/sccs/eu-c2p-dpa/"],
+    ],
+  },
+  {
+    name: { tr: "Google (Giriş)", en: "Google (Sign-in)" },
+    purpose: { tr: "Google hesabıyla giriş", en: "Sign in with Google" },
+    terms: [["Kullanım Şartları", "Terms of Service", "https://policies.google.com/terms"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://policies.google.com/privacy"]],
+    dpa: "note3",
+  },
+  {
+    name: "ElevenLabs",
+    purpose: { tr: "Yapay zekâ ile seslendirme", en: "AI voice generation" },
+    terms: [
+      ["Kullanım Şartları", "Terms of Use", "https://elevenlabs.io/terms-of-use"],
+      ["AEA Kullanım Şartları", "EEA Terms of Use", "https://elevenlabs.io/terms-of-use-eu"],
+    ],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://elevenlabs.io/privacy-policy"]],
+    dpa: [
+      ["Veri İşleme Ek Sözleşmesi", "Data Processing Addendum", "https://elevenlabs.io/dpa"],
+      ["Veri Kullanımı / Model Geliştirme", "Data use / model training", "https://elevenlabs.io/docs/help-center/legal/is-my-data-used-to-improve-eleven-labs-ai-models"],
+    ],
+  },
+  {
+    name: "Deepgram",
+    purpose: { tr: "Konuşma tanıma, replik takibi", en: "Speech recognition, line tracking" },
+    terms: [["Kullanım Şartları", "Terms of Service", "https://deepgram.com/terms"]],
+    privacy: [["Güvenlik ve Gizlilik", "Security and Privacy", "https://developers.deepgram.com/trust-security/information-security-privacy"]],
+    dpa: "note1",
+  },
+  {
+    name: "Supabase",
+    purpose: { tr: "Veritabanı ve dosya depolama altyapısı", en: "Database and file storage infrastructure" },
+    terms: [["Kullanım Şartları", "Terms of Service", "https://supabase.com/terms"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://supabase.com/privacy"]],
+    dpa: [["Veri İşleme Ek Sözleşmesi", "Data Processing Addendum", "https://supabase.com/legal/customer-resources/data-processing-addendum"]],
+  },
+  {
+    name: "Cloudflare R2",
+    purpose: { tr: "Üretilen ses kliplerinin depolanması", en: "Storage of generated audio clips" },
+    terms: [["Kullanım Şartları", "Terms of Use", "https://www.cloudflare.com/terms/"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://www.cloudflare.com/privacypolicy/"]],
+    dpa: [["Veri İşleme Ek Sözleşmesi", "Data Processing Addendum", "https://www.cloudflare.com/cloudflare-customer-dpa/"]],
+  },
+  {
+    name: "OneSignal",
+    purpose: { tr: "Anlık bildirimler", en: "Push notifications" },
+    terms: [["Kullanım Şartları", "Terms of Service", "https://onesignal.com/terms"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://onesignal.com/privacy_policy"]],
+    dpa: [["Veri İşleme Ek Sözleşmesi", "Data Processing Addendum", "https://onesignal.com/dpa"]],
+  },
+  {
+    name: "Sentry",
+    purpose: { tr: "Hata izleme ve oturum kaydı (metin ve görseller maskelenir)", en: "Error monitoring and session replay (text and images are masked)" },
+    terms: [["Kullanım Şartları", "Terms of Service", "https://sentry.io/terms/"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://sentry.io/privacy/"]],
+    dpa: [["Veri İşleme Ek Sözleşmesi", "Data Processing Addendum", "https://sentry.io/legal/dpa/"]],
+  },
+  {
+    name: "RevenueCat",
+    purpose: { tr: "Satın alma ve abonelik yönetimi", en: "Purchase and subscription management" },
+    terms: [["Kullanım Şartları", "Terms of Service", "https://www.revenuecat.com/terms"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://www.revenuecat.com/privacy"]],
+    dpa: [["Veri İşleme Ek Sözleşmesi", "Data Processing Addendum", "https://www.revenuecat.com/dpa"]],
+  },
+  {
+    name: "Shorebird",
+    purpose: { tr: "Uygulama güncellemelerinin (yama) dağıtımı", en: "Delivery of app updates (patches)" },
+    terms: [["Kullanım Şartları", "Terms of Service", "https://shorebird.dev/terms/"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://shorebird.dev/privacy/"]],
+    dpa: "note4",
+  },
+  {
+    name: { tr: "Apple (Giriş, IAP, Bildirim)", en: "Apple (Sign-in, IAP, Notifications)" },
+    purpose: { tr: "Apple ile giriş, uygulama içi satın alma, bildirim altyapısı", en: "Sign in with Apple, in-app purchases, notification infrastructure" },
+    terms: [["Apple Medya Hizmetleri Şartları", "Apple Media Services Terms", "https://www.apple.com/legal/internet-services/itunes/us/terms.html"]],
+    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://www.apple.com/legal/privacy/en-ww/"]],
+    dpa: "note2",
+  },
+  {
+    name: "Apple AdServices",
+    purpose: { tr: "Reklam ölçümü (IDFA kullanılmaz)", en: "Ad attribution (IDFA is not used)" },
+    terms: [["Teknik Dokümantasyon", "Technical documentation", "https://developer.apple.com/documentation/adservices"]],
+    privacy: [["Apple Reklamcılık ve Gizlilik", "Apple Advertising and Privacy", "https://www.apple.com/legal/privacy/data/en/apple-advertising/"]],
+    dpa: "note2",
+  },
+];
+
+const THIRD_PARTY = {
+  tr: {
+    path: "ucuncu-taraf-hizmetler",
+    label: "Kullanılan Üçüncü Taraf Hizmetler",
+    title: "Kullanılan Üçüncü Taraf Hizmetler",
+    description: "Suflor'un kullandığı üçüncü taraf hizmet sağlayıcılarının güncel listesi.",
+    updated: "Son güncelleme: 15.09.2026",
+    columns: ["Sağlayıcı", "Kullanım Amacı", "Kullanım Şartları", "Gizlilik Politikası", "Veri İşleme Sözleşmesi (DPA)"],
+    intro: [
+      `Bu sayfa, SUFLÖR Kullanım ve Hizmet Sözleşmesi Md. 21.5 ve KVKK Aydınlatma Metni'nde atıf yapılan,
+       hâlihazırda kullanılan üçüncü taraf hizmet sağlayıcılarının güncel listesidir. Bu sayfanın
+       güncellenmesi (bir sağlayıcının eklenmesi, kaldırılması veya bir bağlantının değişmesi) Sözleşme'nin
+       veya Aydınlatma Metni'nin değiştirilmesi anlamına gelmez; yalnızca mevcut yükümlülüklerin fiilen
+       hangi sağlayıcı üzerinden yerine getirildiğini gösterir. Sağlayıcı değişikliği kişisel veri işleme
+       faaliyetlerinin kapsamını değiştiriyorsa, bu durum ayrıca Sözleşme ve/veya Aydınlatma Metni
+       güncellemesiyle bildirilir.`,
+    ],
+    outro: [
+      `Üçüncü taraf sağlayıcıların kendi şart ve politikaları zaman içinde değişebilir; güncel içerik için
+       ilgili sağlayıcının kendi sitesine bakılması önerilir. Bu sayfa, kullanıcıların bilgilendirilmesi
+       amacıyla hazırlanmıştır ve sağlayıcıların kendi metinlerinin yerine geçmez.`,
+    ],
+    notes: [
+      `Deepgram, standart veri işleme sözleşmesini kamuya açık bir bağlantı olarak yayımlamamaktadır; sözleşme
+       (Standart Sözleşme Maddelerini içerecek şekilde) yalnızca sağlayıcıya doğrudan talep iletilerek
+       (<a href="mailto:security@deepgram.com">security@deepgram.com</a>) temin edilebilmektedir.`,
+      `Apple; giriş, uygulama içi satın alma, bildirim altyapısı ve reklam ölçümü işlemlerinde SUFLÖR'ün
+       değil kendi Gizlilik Politikası'nın uygulandığı bağımsız bir veri sorumlusu sıfatıyla hareket
+       etmektedir; bu nedenle geliştiricilerle kamuya açık, imzalanabilir bir veri işleme sözleşmesi
+       paylaşmamaktadır.`,
+      `Google, hesabıyla giriş işleminde Apple ile aynı konumdadır: kimlik doğrulamayı kendi adına, kendi
+       Gizlilik Politikası kapsamında yürütür. Gemini API ise bizim adımıza işleme yapar ve yukarıdaki veri
+       işleme sözleşmesine tabidir.`,
+      `Shorebird yalnızca uygulama sürüm bilgisini alarak güncelleme paketini iletir; kullanıcı hesabına ait
+       bir veri paylaşılmaz. Kamuya açık, imzalanabilir bir veri işleme sözleşmesi yayımlanmamaktadır.`,
+    ],
+  },
+  en: {
+    path: "en/third-party-services",
+    label: "Third-Party Services Used",
+    title: "Third-Party Services Used",
+    description: "The current list of third-party service providers Suflor uses.",
+    updated: "Last updated: 15 September 2026",
+    columns: ["Provider", "Purpose", "Terms", "Privacy Policy", "Data Processing Agreement"],
+    intro: [
+      `This page is the current list of third-party service providers in use, referenced in Article 21.5 of
+       the Suflor Terms of Service and in the Privacy Notice. Updating this page — adding or removing a
+       provider, or changing a link — does not amend the Terms or the Privacy Notice; it shows which
+       provider currently carries out an existing obligation. Where a change of provider alters the scope of
+       personal data processing, that change is announced separately through an update to the Terms and/or
+       the Privacy Notice.`,
+    ],
+    outro: [
+      `Providers may change their own terms and policies over time; for the current text, please refer to the
+       provider's own site. This page is published for information and does not replace the providers' own
+       documents.`,
+    ],
+    notes: [
+      `Deepgram does not publish its standard data processing agreement at a public address; it is provided
+       (including the Standard Contractual Clauses) only on direct request to
+       <a href="mailto:security@deepgram.com">security@deepgram.com</a>.`,
+      `For sign-in, in-app purchases, notification infrastructure and ad attribution, Apple acts as an
+       independent controller under its own Privacy Policy rather than Suflor's, and therefore does not
+       offer developers a public, signable data processing agreement.`,
+      `For sign-in, Google is in the same position as Apple: it carries out authentication on its own
+       behalf, under its own Privacy Policy. The Gemini API, by contrast, processes on our behalf and is
+       covered by the data processing addendum above.`,
+      `Shorebird receives only the app's release information in order to deliver an update package; no
+       account data is shared. It does not publish a public, signable data processing agreement.`,
+    ],
+  },
+};
+
+function thirdPartyPage(locale) {
+  const page = THIRD_PARTY[locale];
+  const meta = LOCALE_META[locale];
+  const other = locale === "tr" ? "en" : "tr";
+  const up = upTo(page.path);
+  const noteIndex = { note1: 1, note2: 2, note3: 3, note4: 4 };
+
+  const links = (list) =>
+    typeof list === "string"
+      ? `<span class="dash">—</span><sup>${noteIndex[list]}</sup>`
+      : list
+          .map(([tr, en, href]) => `<a href="${href}">${escapeHtml(locale === "tr" ? tr : en)}</a>`)
+          .join("<br />");
+
+  // Sütun başlıkları hücrelere data-label olarak da yazılıyor: dar ekranda tablo yığılıyor ve başlık satırı
+  // kayboluyor, hücrenin hangi sütun olduğunu ancak bu söylüyor.
+  const [nameColumn, purposeColumn, termsColumn, privacyColumn, dpaColumn] = page.columns;
+  const rows = PROVIDERS.map(
+    (provider) => `          <tr>
+            <th scope="row" data-label="${escapeHtml(nameColumn)}">${escapeHtml(
+              typeof provider.name === "string" ? provider.name : provider.name[locale],
+            )}</th>
+            <td data-label="${escapeHtml(purposeColumn)}">${escapeHtml(provider.purpose[locale])}</td>
+            <td data-label="${escapeHtml(termsColumn)}">${links(provider.terms)}</td>
+            <td data-label="${escapeHtml(privacyColumn)}">${links(provider.privacy)}</td>
+            <td data-label="${escapeHtml(dpaColumn)}">${links(provider.dpa)}</td>
+          </tr>`,
+  ).join("\n");
+
+  const paragraphs = (list) => list.map((text) => `      <p>${text}</p>`).join("\n");
+  const notes = page.notes
+    .map((note, index) => `      <p class="note"><sup>${index + 1}</sup> ${note}</p>`)
+    .join("\n");
+
+  const body = `      <h1>${escapeHtml(page.title)}</h1>
+      <p class="updated">${escapeHtml(page.updated)}</p>
+      <p class="switch"><a href="${up}${THIRD_PARTY[other].path}/">${meta.other}</a></p>
+${paragraphs(page.intro)}
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>${page.columns.map((column) => `<th scope="col">${escapeHtml(column)}</th>`).join("")}</tr>
+          </thead>
+          <tbody>
+${rows}
+          </tbody>
+        </table>
+      </div>
+${paragraphs(page.outro)}
+${notes}
+      <p class="switch"><a href="${up}">${meta.back}</a></p>`;
+
+  return layout({ path: page.path, locale, title: page.title, description: page.description, body });
+}
+
 function indexPage(published) {
   const links = published
     .map(
       ({ doc, row }) =>
         `        <li><a href="${doc.path}/">${escapeHtml(row.title || doc.label)}</a> <span>${
           doc.locale === "tr" ? "Türkçe" : "English"
+        }</span></li>`,
+    )
+    .join("\n");
+
+  const thirdPartyLinks = ["tr", "en"]
+    .map(
+      (locale) =>
+        `        <li><a href="${THIRD_PARTY[locale].path}/">${escapeHtml(THIRD_PARTY[locale].label)}</a> <span>${
+          locale === "tr" ? "Türkçe" : "English"
         }</span></li>`,
     )
     .join("\n");
@@ -314,6 +550,10 @@ function indexPage(published) {
       <p>${escapeHtml(SITE_NAME)} uygulamasının yürürlükteki belgeleri.</p>
       <ul class="docs">
 ${links}
+      </ul>
+      <h2>Üçüncü taraf hizmetler</h2>
+      <ul class="docs">
+${thirdPartyLinks}
       </ul>
       <h2>Destek</h2>
       <ul class="docs">
@@ -416,6 +656,86 @@ p { margin: 0 0 16px; }
 
 a { color: var(--link); }
 
+.table-scroll {
+  margin: 1.5rem 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  table-layout: fixed;
+}
+
+th,
+td {
+  border: 1px solid var(--rule);
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: break-word;
+}
+
+thead th {
+  font-weight: 600;
+}
+
+tbody th {
+  font-weight: 600;
+}
+
+td .dash {
+  color: var(--muted);
+}
+
+/* Dar ekranda beş sütun sığmıyor; yatay kaydırma yerine her sağlayıcı bir kart oluyor. Başlık satırı
+   kayboluyor, sütun adını hücrenin kendi data-label'ı taşıyor. */
+@media (max-width: 40rem) {
+  table,
+  tbody,
+  tbody tr,
+  tbody th,
+  tbody td {
+    display: block;
+    width: auto;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    border: 1px solid var(--rule);
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  tbody th,
+  tbody td {
+    border: 0;
+    padding: 0.2rem 0;
+  }
+
+  tbody th {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  tbody td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+}
+
+.note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .updated,
 .switch {
   color: var(--muted);
@@ -456,7 +776,7 @@ async function main() {
   const key = env("SUPABASE_ANON_KEY");
 
   const response = await fetch(
-    `${url}/rest/v1/legal_document_texts?select=slug,locale,title,sections,updated_at&slug=in.(privacy,terms,subprocessors)`,
+    `${url}/rest/v1/legal_document_texts?select=slug,locale,title,sections,updated_at&slug=in.(privacy,terms)`,
     { headers: { apikey: key, Authorization: `Bearer ${key}` } },
   );
 
@@ -499,6 +819,15 @@ async function main() {
     await mkdir(dirname(target), { recursive: true });
     await writeFile(target, supportPage(locale), "utf8");
     console.log(`yazıldı: docs/${SUPPORT[locale].path}/index.html`);
+  }
+
+  // Sözleşme ve aydınlatma metni bu sayfaya atıf yapıyor; destek sayfası gibi veritabanına bakmıyor, bu
+  // yüzden bir belgenin eksik olması onu da etkilemez.
+  for (const locale of ["tr", "en"]) {
+    const target = join(OUT, THIRD_PARTY[locale].path, "index.html");
+    await mkdir(dirname(target), { recursive: true });
+    await writeFile(target, thirdPartyPage(locale), "utf8");
+    console.log(`yazıldı: docs/${THIRD_PARTY[locale].path}/index.html`);
   }
 
   await writeFile(join(OUT, "index.html"), indexPage(published), "utf8");
