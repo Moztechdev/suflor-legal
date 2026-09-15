@@ -305,7 +305,7 @@ const PROVIDERS = [
     purpose: { tr: "Google hesabıyla giriş", en: "Sign in with Google" },
     terms: [["Kullanım Şartları", "Terms of Service", "https://policies.google.com/terms"]],
     privacy: [["Gizlilik Politikası", "Privacy Policy", "https://policies.google.com/privacy"]],
-    dpa: "note3",
+    dpa: "googleSignin",
   },
   {
     name: "ElevenLabs",
@@ -325,7 +325,7 @@ const PROVIDERS = [
     purpose: { tr: "Konuşma tanıma, replik takibi", en: "Speech recognition, line tracking" },
     terms: [["Kullanım Şartları", "Terms of Service", "https://deepgram.com/terms"]],
     privacy: [["Güvenlik ve Gizlilik", "Security and Privacy", "https://developers.deepgram.com/trust-security/information-security-privacy"]],
-    dpa: "note1",
+    dpa: "deepgram",
   },
   {
     name: "Supabase",
@@ -367,21 +367,21 @@ const PROVIDERS = [
     purpose: { tr: "Uygulama güncellemelerinin (yama) dağıtımı", en: "Delivery of app updates (patches)" },
     terms: [["Kullanım Şartları", "Terms of Service", "https://shorebird.dev/terms/"]],
     privacy: [["Gizlilik Politikası", "Privacy Policy", "https://shorebird.dev/privacy/"]],
-    dpa: "note4",
+    dpa: "shorebird",
   },
   {
     name: { tr: "Apple (Giriş, IAP, Bildirim)", en: "Apple (Sign-in, IAP, Notifications)" },
     purpose: { tr: "Apple ile giriş, uygulama içi satın alma, bildirim altyapısı", en: "Sign in with Apple, in-app purchases, notification infrastructure" },
     terms: [["Apple Medya Hizmetleri Şartları", "Apple Media Services Terms", "https://www.apple.com/legal/internet-services/itunes/us/terms.html"]],
     privacy: [["Gizlilik Politikası", "Privacy Policy", "https://www.apple.com/legal/privacy/en-ww/"]],
-    dpa: "note2",
+    dpa: "apple",
   },
   {
     name: "Apple AdServices",
     purpose: { tr: "Reklam ölçümü (IDFA kullanılmaz)", en: "Ad attribution (IDFA is not used)" },
     terms: [["Teknik Dokümantasyon", "Technical documentation", "https://developer.apple.com/documentation/adservices"]],
     privacy: [["Apple Reklamcılık ve Gizlilik", "Apple Advertising and Privacy", "https://www.apple.com/legal/privacy/data/en/apple-advertising/"]],
-    dpa: "note2",
+    dpa: "apple",
   },
 ];
 
@@ -407,20 +407,20 @@ const THIRD_PARTY = {
        ilgili sağlayıcının kendi sitesine bakılması önerilir. Bu sayfa, kullanıcıların bilgilendirilmesi
        amacıyla hazırlanmıştır ve sağlayıcıların kendi metinlerinin yerine geçmez.`,
     ],
-    notes: [
-      `Deepgram, standart veri işleme sözleşmesini kamuya açık bir bağlantı olarak yayımlamamaktadır; sözleşme
+    notes: {
+      deepgram: `Deepgram, standart veri işleme sözleşmesini kamuya açık bir bağlantı olarak yayımlamamaktadır; sözleşme
        (Standart Sözleşme Maddelerini içerecek şekilde) yalnızca sağlayıcıya doğrudan talep iletilerek
        (<a href="mailto:security@deepgram.com">security@deepgram.com</a>) temin edilebilmektedir.`,
-      `Apple; giriş, uygulama içi satın alma, bildirim altyapısı ve reklam ölçümü işlemlerinde SUFLÖR'ün
+      apple: `Apple; giriş, uygulama içi satın alma, bildirim altyapısı ve reklam ölçümü işlemlerinde SUFLÖR'ün
        değil kendi Gizlilik Politikası'nın uygulandığı bağımsız bir veri sorumlusu sıfatıyla hareket
        etmektedir; bu nedenle geliştiricilerle kamuya açık, imzalanabilir bir veri işleme sözleşmesi
        paylaşmamaktadır.`,
-      `Google, hesabıyla giriş işleminde Apple ile aynı konumdadır: kimlik doğrulamayı kendi adına, kendi
+      googleSignin: `Google, hesabıyla giriş işleminde Apple ile aynı konumdadır: kimlik doğrulamayı kendi adına, kendi
        Gizlilik Politikası kapsamında yürütür. Gemini API ise bizim adımıza işleme yapar ve yukarıdaki veri
        işleme sözleşmesine tabidir.`,
-      `Shorebird yalnızca uygulama sürüm bilgisini alarak güncelleme paketini iletir; kullanıcı hesabına ait
+      shorebird: `Shorebird yalnızca uygulama sürüm bilgisini alarak güncelleme paketini iletir; kullanıcı hesabına ait
        bir veri paylaşılmaz. Kamuya açık, imzalanabilir bir veri işleme sözleşmesi yayımlanmamaktadır.`,
-    ],
+    },
   },
   en: {
     path: "en/third-party-services",
@@ -442,19 +442,19 @@ const THIRD_PARTY = {
        provider's own site. This page is published for information and does not replace the providers' own
        documents.`,
     ],
-    notes: [
-      `Deepgram does not publish its standard data processing agreement at a public address; it is provided
+    notes: {
+      deepgram: `Deepgram does not publish its standard data processing agreement at a public address; it is provided
        (including the Standard Contractual Clauses) only on direct request to
        <a href="mailto:security@deepgram.com">security@deepgram.com</a>.`,
-      `For sign-in, in-app purchases, notification infrastructure and ad attribution, Apple acts as an
+      apple: `For sign-in, in-app purchases, notification infrastructure and ad attribution, Apple acts as an
        independent controller under its own Privacy Policy rather than Suflor's, and therefore does not
        offer developers a public, signable data processing agreement.`,
-      `For sign-in, Google is in the same position as Apple: it carries out authentication on its own
+      googleSignin: `For sign-in, Google is in the same position as Apple: it carries out authentication on its own
        behalf, under its own Privacy Policy. The Gemini API, by contrast, processes on our behalf and is
        covered by the data processing addendum above.`,
-      `Shorebird receives only the app's release information in order to deliver an update package; no
+      shorebird: `Shorebird receives only the app's release information in order to deliver an update package; no
        account data is shared. It does not publish a public, signable data processing agreement.`,
-    ],
+    },
   },
 };
 
@@ -463,7 +463,13 @@ function thirdPartyPage(locale) {
   const meta = LOCALE_META[locale];
   const other = locale === "tr" ? "en" : "tr";
   const up = upTo(page.path);
-  const noteIndex = { note1: 1, note2: 2, note3: 3, note4: 4 };
+  // Dipnot numaraları tablodan türetiliyor: bir sağlayıcı eklendiğinde ya da satırlar yer değiştirdiğinde
+  // numaralar kendiliğinden düzeliyor. Elle yazılsaydı okuyucu 1'i aramaya üçüncü satırdan başlıyordu.
+  const noteOrder = [];
+  for (const provider of PROVIDERS) {
+    if (typeof provider.dpa === "string" && !noteOrder.includes(provider.dpa)) noteOrder.push(provider.dpa);
+  }
+  const noteIndex = Object.fromEntries(noteOrder.map((name, index) => [name, index + 1]));
 
   const links = (list) =>
     typeof list === "string"
@@ -488,8 +494,8 @@ function thirdPartyPage(locale) {
   ).join("\n");
 
   const paragraphs = (list) => list.map((text) => `      <p>${text}</p>`).join("\n");
-  const notes = page.notes
-    .map((note, index) => `      <p class="note"><sup>${index + 1}</sup> ${note}</p>`)
+  const notes = noteOrder
+    .map((name, index) => `      <p class="note"><sup>${index + 1}</sup> ${page.notes[name]}</p>`)
     .join("\n");
 
   const body = `      <h1>${escapeHtml(page.title)}</h1>
