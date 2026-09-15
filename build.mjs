@@ -363,13 +363,6 @@ const PROVIDERS = [
     dpa: [["Veri İşleme Ek Sözleşmesi", "Data Processing Addendum", "https://www.revenuecat.com/dpa"]],
   },
   {
-    name: "Shorebird",
-    purpose: { tr: "Uygulama güncellemelerinin (yama) dağıtımı", en: "Delivery of app updates (patches)" },
-    terms: [["Kullanım Şartları", "Terms of Service", "https://shorebird.dev/terms/"]],
-    privacy: [["Gizlilik Politikası", "Privacy Policy", "https://shorebird.dev/privacy/"]],
-    dpa: "shorebird",
-  },
-  {
     name: { tr: "Apple (Giriş, IAP, Bildirim)", en: "Apple (Sign-in, IAP, Notifications)" },
     purpose: { tr: "Apple ile giriş, uygulama içi satın alma, bildirim altyapısı", en: "Sign in with Apple, in-app purchases, notification infrastructure" },
     terms: [["Apple Medya Hizmetleri Şartları", "Apple Media Services Terms", "https://www.apple.com/legal/internet-services/itunes/us/terms.html"]],
@@ -418,8 +411,6 @@ const THIRD_PARTY = {
       googleSignin: `Google, hesabıyla giriş işleminde Apple ile aynı konumdadır: kimlik doğrulamayı kendi adına, kendi
        Gizlilik Politikası kapsamında yürütür. Gemini API ise bizim adımıza işleme yapar ve yukarıdaki veri
        işleme sözleşmesine tabidir.`,
-      shorebird: `Shorebird yalnızca uygulama sürüm bilgisini alarak güncelleme paketini iletir; kullanıcı hesabına ait
-       bir veri paylaşılmaz. Kamuya açık, imzalanabilir bir veri işleme sözleşmesi yayımlanmamaktadır.`,
     },
   },
   en: {
@@ -452,8 +443,6 @@ const THIRD_PARTY = {
       googleSignin: `For sign-in, Google is in the same position as Apple: it carries out authentication on its own
        behalf, under its own Privacy Policy. The Gemini API, by contrast, processes on our behalf and is
        covered by the data processing addendum above.`,
-      shorebird: `Shorebird receives only the app's release information in order to deliver an update package; no
-       account data is shared. It does not publish a public, signable data processing agreement.`,
     },
   },
 };
