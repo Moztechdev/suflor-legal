@@ -26,11 +26,26 @@ const CONTACT = "suflorapp@gmail.com";
 /// Sağlayıcı listesi de burada değil — o sayfa panelden düzenlenen bir metin olmadığı için üreticinin
 /// kendi içinde duruyor (aşağıdaki PROVIDERS ve THIRD_PARTY).
 const DOCS = [
-  { slug: "privacy", locale: "tr", path: "gizlilik", label: "Gizlilik Politikası" },
-  { slug: "terms", locale: "tr", path: "kullanim-sartlari", label: "Kullanım Şartları" },
-  { slug: "privacy", locale: "en", path: "en/privacy", label: "Privacy Policy" },
-  { slug: "terms", locale: "en", path: "en/terms", label: "Terms of Use" },
+  { slug: "privacy", locale: "tr", path: "aydinlatma-metni", label: "Aydınlatma Metni" },
+  { slug: "terms", locale: "tr", path: "kullanim-ve-hizmet-sozlesmesi", label: "Kullanım ve Hizmet Sözleşmesi" },
+  { slug: "privacy", locale: "en", path: "en/privacy-notice", label: "Privacy Notice" },
+  { slug: "terms", locale: "en", path: "en/terms-of-service", label: "Terms of Service" },
 ];
+
+/// Eski adresler. Belgelerin adı değişince yolları da değişti, ama bu adresler App Store ve Play
+/// listelerinde yazılı ve dışarıya verilmiş olabilir — 404 vermek yerine yeni adrese götüren bir sayfa
+/// bırakılıyor. Mağaza alanları güncellendikten sonra bu liste boşaltılabilir.
+const MOVED = [
+  { from: "gizlilik", to: "aydinlatma-metni", locale: "tr" },
+  { from: "kullanim-sartlari", to: "kullanim-ve-hizmet-sozlesmesi", locale: "tr" },
+  { from: "en/privacy", to: "en/privacy-notice", locale: "en" },
+  { from: "en/terms", to: "en/terms-of-service", locale: "en" },
+];
+
+const MOVED_TEXT = {
+  tr: { title: "Bu sayfa taşındı", body: "Belgenin yeni adresi:", link: "Yeni adrese git" },
+  en: { title: "This page has moved", body: "The document is now at:", link: "Go to the new address" },
+};
 
 const LOCALE_META = {
   tr: { htmlLang: "tr", updated: "Son güncelleme", home: "Suflor", other: "English", back: "Tüm belgeler" },
@@ -51,61 +66,69 @@ const SUPPORT = {
     title: "Destek",
     description: "Suflor destek sayfası — iletişim ve sık sorulan sorular.",
     intro: [
-      "Suflor, oyuncuların senaryolarını yükleyip prova yaptığı ve audition kaydı aldığı bir uygulamadır.",
-      `Sorunuz, hata bildiriminiz veya talebiniz için <a href="mailto:${CONTACT}">${CONTACT}</a> adresine
-       yazın. Mesajlarınızı iki iş günü içinde yanıtlıyoruz.`,
-      "Daha hızlı çözebilmemiz için yazarken şunları ekleyin: hesabınızda kullandığınız e-posta adresi, " +
-        "cihaz modeliniz ve iOS/Android sürümünüz, sorunun ne yaparken oluştuğu.",
+      "Bir sorun mu yaşadın? Bir şey mi anlaşılmadı? Suflörle ilgili fikirlerini mi paylaşmak istiyorsun? Biz buradayız!",
+      `Bize ulaşmak için: Uygulama içinden Profil → Bize Yaz, ya da doğrudan
+       <a href="mailto:${CONTACT}">${CONTACT}</a> adresine yazabilirsin. Mesajlarını en geç iki iş günü
+       içinde yanıtlıyoruz.`,
+      `İşini kolaylaştırmak için yazarken şunları eklersen çok yardımcı olur: hesabında kullandığın e-posta
+       adresi, cihaz modelin ve iOS/Android sürümün, sorunun tam olarak ne yaparken ortaya çıktığı.`,
     ],
     faq: [
       [
         "Krediler nasıl çalışır?",
         [
-          "Prova yapmak hiçbir zaman kredi harcamaz. Kredi; senaryo yükleyip analiz ettirirken, replikler " +
-            "seslendirilirken, bir repliği düzenleyip sesini yeniden ürettirirken ve tamamladığınız kaydı " +
-            "galeriye kaydederken harcanır.",
-          "Hangi işlemin kaç kredi olduğunu uygulama içindeki Kredi Satın Al ekranında güncel hâliyle " +
-            "görebilirsiniz.",
+          `Prova yapmak hiçbir zaman kredi harcamaz, istediğin kadar çalışabilirsin. Kredi; senaryonu
+           yükleyip analiz ettirdiğinde, replikleri yapay zekâyla seslendirttiğinde, bir repliği düzenleyip
+           sesini yeniden ürettirdiğinde ve tamamladığın kaydı galeriye kaydettiğinde harcanır.`,
+          `Hangi işlemin kaç krediye denk geldiğini, uygulama içindeki Kredi Satın Al ekranında her zaman
+           güncel hâliyle görebilirsin.`,
         ],
       ],
       [
         "Satın aldığım kredi hesabıma geçmedi",
         [
-          "Satın alma Apple veya Google üzerinden tamamlanır, kredi genellikle birkaç saniye içinde " +
-            "yüklenir. Yüklenmediyse önce uygulamayı tamamen kapatıp yeniden açın.",
-          "Sorun sürerse satın alma tarihini ve mağazadan gelen makbuz numarasını bize yazın; işlemi " +
-            "kontrol edip krediyi elle tanımlayalım.",
+          `Satın alma işlemi Apple veya Google üzerinden tamamlanıyor ve kredi genellikle birkaç saniye
+           içinde hesabına yükleniyor. Görünmüyorsa önce uygulamayı tamamen kapatıp yeniden aç, çoğu zaman
+           bu yeterli oluyor.`,
+          `Sorun devam ederse satın alma tarihini ve mağazadan gelen makbuz numarasını bize yaz; işlemi
+           kontrol edip kredini tanımlayalım.`,
         ],
       ],
       [
         "İade alabilir miyim?",
         [
-          "Uygulama içi satın almaların iadesini mağaza yapıyor, biz mağaza adına iade işleme " +
-            'alamıyoruz. App Store için <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>, ' +
-            "Google Play için Play Store'daki sipariş geçmişiniz üzerinden talep oluşturabilirsiniz.",
+          `Uygulama içi satın almaların iadesi mağaza tarafından yönetiliyor, biz mağaza adına iade işlemi
+           yapamıyoruz. App Store için <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>
+           adresinden, Google Play için Play Store'daki sipariş geçmişin üzerinden talep oluşturabilirsin.`,
         ],
       ],
       [
         "Hesabımı nasıl silerim?",
         [
-          "Uygulama içinden: Profil → Hesabı Sil. Onayladığınızda tüm senaryolarınız, kayıtlarınız ve " +
-            "kalan krediniz kalıcı olarak silinir; bu işlem geri alınamaz.",
+          `Uygulama içinden Profil → Hesabı Sil adımlarıyla bize veda edebilirsin. Onayladığında
+           senaryoların, kayıtların ve kullanılmamış kredilerin hesabından kalıcı olarak kaldırılır ve bu
+           işlem geri alınamaz. Yalnızca yasal olarak saklamamız gereken bilgiler bunun dışında kalır.`,
+          `Bir öneri: silmeden önce varsa kalan kredilerini kullanmayı unutma, çünkü hesap silindikten sonra
+           bunları geri getiremiyoruz.`,
         ],
       ],
       [
         "Yüklediğim senaryoya ne oluyor?",
         [
-          "Senaryonuz, karakter ve replik akışına ayrılabilmesi için işlenir. Hangi verinin ne amaçla " +
-            'işlendiği ve ne kadar saklandığı <a href="{PRIVACY}">Gizlilik Politikası</a>\'nda yazıyor.',
+          `Senaryon, karakter ve replik akışına ayrılabilmesi için işleniyor. Hangi verinin hangi amaçla
+           işlendiğini ve ne kadar süreyle saklandığını <a href="{PRIVACY}">Aydınlatma Metni</a>'nde
+           ayrıntılı şekilde bulabilirsin.`,
         ],
       ],
       [
         "Çektiğim video nerede?",
         [
-          "Kaydı tamamlayıp galeriye kaydettiğinizde video doğrudan telefonunuzun galerisine düşer.",
+          `Kaydını tamamlayıp galeriye kaydettiğinde video doğrudan telefonunun galerisine düşer, bizim
+           sunucularımıza hiç yüklenmez.`,
         ],
       ],
     ],
+    closing: "Burada cevabını bulamadığın soru, öneri veya şikayetin varsa, bize yazmayı unutma!",
   },
   en: {
     path: "en/support",
@@ -113,64 +136,74 @@ const SUPPORT = {
     title: "Support",
     description: "Suflor support — contact and frequently asked questions.",
     intro: [
-      "Suflor is an app where actors upload their scripts, rehearse, and record audition takes.",
-      `For questions, bug reports or requests, write to <a href="mailto:${CONTACT}">${CONTACT}</a>. We
-       reply within two business days.`,
-      "To help us resolve it faster, include the email address on your account, your device model and " +
-        "iOS/Android version, and what you were doing when the problem happened.",
+      "Run into a problem? Something unclear? Want to share what you think about Suflor? We are here.",
+      `To reach us: inside the app, go to Profile → Write to Us, or email
+       <a href="mailto:${CONTACT}">${CONTACT}</a> directly. We answer within two business days at the latest.`,
+      `It helps us a lot if you include: the email address on your account, your device model and iOS/Android
+       version, and exactly what you were doing when the problem appeared.`,
     ],
     faq: [
       [
         "How do credits work?",
         [
-          "Rehearsing never costs credits. Credits are spent when a script is uploaded and analysed, when " +
-            "lines are voiced, when you edit a line and its audio is regenerated, and when you save a " +
-            "finished take to your photo library.",
-          "The current cost of each action is shown on the Buy Credits screen inside the app.",
+          `Rehearsing never costs credits — practise as much as you like. Credits are spent when you upload a
+           script for analysis, have lines voiced by AI, edit a line and have its audio regenerated, and when
+           you save a finished recording to your gallery.`,
+          `You can always see the current cost of each action on the Buy Credits screen in the app.`,
         ],
       ],
       [
-        "I bought credits but they didn't arrive",
+        "I bought credits but they have not arrived",
         [
-          "Purchases are completed through Apple or Google and credits usually land within seconds. If " +
-            "they don't, close the app completely and reopen it.",
-          "If the problem persists, send us the purchase date and the receipt number from the store and " +
-            "we'll check the transaction and add the credits manually.",
+          `The purchase is completed through Apple or Google, and credits usually land in your account within
+           a few seconds. If you cannot see them, close the app completely and open it again — that is
+           usually enough.`,
+          `If the problem persists, send us the date of the purchase and the receipt number from the store,
+           and we will check the transaction and add your credits.`,
         ],
       ],
       [
         "Can I get a refund?",
         [
-          "Refunds for in-app purchases are handled by the store, not by us. For the App Store, use " +
-            '<a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>; for Google Play, ' +
-            "request it from your order history in the Play Store.",
+          `Refunds for in-app purchases are handled by the store; we cannot issue a refund on the store's
+           behalf. For the App Store, request one at
+           <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>; for Google Play, use your
+           order history in the Play Store.`,
         ],
       ],
       [
         "How do I delete my account?",
         [
-          "In the app: Profile → Delete Account. Once confirmed, all of your scripts, recordings and " +
-            "remaining credits are permanently deleted; this cannot be undone.",
+          `You can say goodbye from Profile → Delete Account inside the app. Once you confirm, your scripts,
+           recordings and unused credits are permanently removed from your account, and this cannot be
+           undone. Only information we are legally required to keep remains.`,
+          `One suggestion: use any remaining credits before you delete, because we cannot restore them once
+           the account is gone.`,
         ],
       ],
       [
         "What happens to the script I upload?",
         [
-          "Your script is processed so it can be split into characters and lines. What is processed, why, " +
-            'and how long it is kept is described in the <a href="{PRIVACY}">Privacy Policy</a>.',
+          `Your script is processed so it can be split into characters and lines. Which data is processed for
+           which purpose, and how long it is kept, is set out in detail in the
+           <a href="{PRIVACY}">Privacy Notice</a>.`,
         ],
       ],
       [
         "Where is the video I recorded?",
-        ["Once you finish a take and save it, the video goes straight to your phone's photo library."],
+        [
+          `When you finish a recording and save it, the video goes straight to your phone's gallery. It is
+           never uploaded to our servers.`,
+        ],
       ],
     ],
+    closing: "If your question is not answered here, or you have a suggestion or a complaint, write to us.",
   },
 };
 
 /// Destek sayfasından gizlilik politikasına giden yol, dile göre değişiyor (tr → gizlilik, en →
 /// en/privacy) ve sayfanın derinliğine göre relative çözülmesi gerekiyor.
-const PRIVACY_PATH = { tr: "gizlilik", en: "en/privacy" };
+const PRIVACY_PATH = { tr: "aydinlatma-metni", en: "en/privacy-notice" };
 
 function env(name) {
   const value = process.env[name];
@@ -193,12 +226,26 @@ function escapeHtml(value) {
 
 /// Metin kutusundan gelen düz yazıyı paragraflara böler. Boş satır yeni paragraf, tek satır başı ise
 /// aynı paragraf içinde satır sonu — panelde "a) ...\nb) ..." diye yazılan maddeler böylece bitişik kalmaz.
+/// Gövde metnindeki `[görünen metin](adres)` işaretlemesini bağlantıya çevirir.
+///
+/// Metin veritabanından geliyor ve panelden düzenlenebiliyor, yani HTML'e izin verilemez — bu yüzden gövde
+/// önce kaçırılıyor, bağlantılar ancak ondan sonra kuruluyor. Hukuk metninde bir adresi cümlenin içine
+/// gömmenin başka yolu yok: avukat ham adreslerin silinip ifadenin kendisinin bağlanmasını istedi.
+///
+/// Yalnızca https ve mailto kabul ediliyor; başka bir şema yazılmışsa bağlantı kurulmuyor, metin olduğu
+/// gibi kalıyor. `javascript:` gibi bir adresin panelden metne girip tıklanabilir hâle gelmesi istenmez.
+function linkify(escaped) {
+  return escaped.replace(/\[([^\]]+)\]\((https:\/\/[^\s)]+|mailto:[^\s)]+)\)/g, (match, label, href) => {
+    return `<a href="${href}">${label}</a>`;
+  });
+}
+
 function toParagraphs(body) {
   return String(body ?? "")
     .split(/\n\s*\n/)
     .map((block) => block.trim())
     .filter(Boolean)
-    .map((block) => `<p>${escapeHtml(block).replaceAll("\n", "<br />")}</p>`)
+    .map((block) => `<p>${linkify(escapeHtml(block)).replaceAll("\n", "<br />")}</p>`)
     .join("\n        ");
 }
 
@@ -219,7 +266,7 @@ function upTo(path) {
   return depth === 0 ? "./" : "../".repeat(depth);
 }
 
-function layout({ path, locale, title, description, body }) {
+function layout({ path, locale, title, description, body, head = "" }) {
   const meta = LOCALE_META[locale];
   const up = upTo(path);
 
@@ -230,7 +277,7 @@ function layout({ path, locale, title, description, body }) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)} — ${SITE_NAME}</title>
     <meta name="description" content="${escapeHtml(description)}" />
-    <link rel="stylesheet" href="${up}style.css" />
+    <link rel="stylesheet" href="${up}style.css" />${head}
   </head>
   <body>
     <header class="top">
@@ -508,6 +555,27 @@ ${notes}
   return layout({ path: page.path, locale, title: page.title, description: page.description, body });
 }
 
+/// Eski adreste duran tek satırlık yönlendirme sayfası.
+///
+/// `meta refresh` ile hemen yeni adrese gidiyor, ama metin de yazılı: yenilemenin engellendiği ya da
+/// çalışmadığı bir yerde kullanıcı en azından nereye gitmesi gerektiğini görüyor. `canonical` ise
+/// arama motorlarının eski adresi yenisinin kopyası saymasını sağlıyor.
+function movedPage(entry) {
+  const text = MOVED_TEXT[entry.locale];
+  const up = upTo(entry.from);
+  const target = `${up}${entry.to}/`;
+
+  return layout({
+    path: entry.from,
+    locale: entry.locale,
+    title: text.title,
+    description: text.title,
+    head: `\n    <meta http-equiv="refresh" content="0; url=${target}" />\n    <link rel="canonical" href="${target}" />`,
+    body: `      <h1>${escapeHtml(text.title)}</h1>
+      <p>${escapeHtml(text.body)} <a href="${target}">${escapeHtml(text.link)}</a></p>`,
+  });
+}
+
 function indexPage(published) {
   const links = published
     .map(
@@ -571,9 +639,10 @@ function supportPage(locale) {
     .join("\n");
 
   const body = `      <h1>${escapeHtml(page.title)}</h1>
-${paragraphs(page.intro)}
       <p class="switch"><a href="${up}${SUPPORT[other].path}/">${meta.other}</a></p>
+${paragraphs(page.intro)}
 ${faq}
+      <p>${resolve(page.closing)}</p>
       <p class="switch"><a href="${up}">${meta.back}</a></p>`;
 
   return layout({
@@ -823,6 +892,13 @@ async function main() {
     await mkdir(dirname(target), { recursive: true });
     await writeFile(target, thirdPartyPage(locale), "utf8");
     console.log(`yazıldı: docs/${THIRD_PARTY[locale].path}/index.html`);
+  }
+
+  for (const entry of MOVED) {
+    const target = join(OUT, entry.from, "index.html");
+    await mkdir(dirname(target), { recursive: true });
+    await writeFile(target, movedPage(entry), "utf8");
+    console.log(`yazıldı: docs/${entry.from}/index.html (taşındı → ${entry.to})`);
   }
 
   await writeFile(join(OUT, "index.html"), indexPage(published), "utf8");
